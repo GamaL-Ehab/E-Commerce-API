@@ -17,6 +17,11 @@
 
   <ItemGroup>
     <ProjectReference Include="..\E-Commerce.Persistence\E-Commerce.Persistence.csproj" />
+    <ProjectReference Include="..\E-Commerce.Presentation.API\E-Commerce.Presentation.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="wwwroot\Images\Products\" />
   </ItemGroup>
 
 </Project>
