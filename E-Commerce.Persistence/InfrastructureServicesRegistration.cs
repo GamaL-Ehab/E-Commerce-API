@@ -1,0 +1,26 @@
+﻿using E_Commerce.Domain.Contracts;
+using E_Commerce.Persistence.Context;
+using E_Commerce.Persistence.DbInitializers;
+using E_Commerce.Persistence.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+
+namespace E_Commerce.Persistence
+{
+    public static class InfrastructureServicesRegistration
+    {
+        public static IServiceCollection AddInfrastructureServices(this IServiceCollection services, IConfiguration configuration) 
+        {
+            services.AddDbContext<StoreDbContext>(options =>
+            {
+                options.UseSqlServer(configuration.GetConnectionString("SQLConnection"));
+            });
+
+            services.AddScoped<IDbInitializer, DbInitializer>();
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+            return services;
+        }
+    }
+}
