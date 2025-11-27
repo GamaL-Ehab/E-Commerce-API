@@ -4,7 +4,7 @@ using E_Commerce.Persistence.Context;
 using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
-namespace E_Commerce.Persistence.DbInitializer
+namespace E_Commerce.Persistence.DbInitializers
 {
     public class DbInitializer(StoreDbContext context) : IDbInitializer
     {
