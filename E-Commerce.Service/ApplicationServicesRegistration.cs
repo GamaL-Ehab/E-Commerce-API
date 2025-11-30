@@ -3,11 +3,6 @@ using E_Commerce.Service.Services;
 using E_Commerce.Services.Abstraction;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace E_Commerce.Service
 {
@@ -16,7 +11,9 @@ namespace E_Commerce.Service
         public static IServiceCollection AddApplicationServices(this IServiceCollection services, IConfiguration configuration) 
         {
             services.AddScoped<IProductService, ProductService>();
+            services.AddScoped<IBasketService, BasketService>();
             services.AddAutoMapper(x => x.AddProfile(new ProductProfile(configuration)));
+            services.AddAutoMapper(x => x.AddProfile(new BasketProfile()));
 
             return services;
         }
