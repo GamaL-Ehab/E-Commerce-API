@@ -1,4 +1,5 @@
-﻿using E_Commerce.Services.Abstraction;
+﻿using E_Commerce.Presentation.API.Attributes;
+using E_Commerce.Services.Abstraction;
 using E_Commerce.Shared;
 using E_Commerce.Shared.Dtos.Products;
 using E_Commerce.Shared.ErrorModels;
@@ -7,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace E_Commerce.Presentation.API.Controllers
 {
-    public class ProductController(IProductService productService) : APIBaseController
+    public class ProductsController(IProductService productService) : APIBaseController
     {
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BrandDto>))]
@@ -34,6 +35,7 @@ namespace E_Commerce.Presentation.API.Controllers
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(PaginatedResult<ProductDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
+        [Cache(60)]
         public async Task<ActionResult<PaginatedResult<ProductDto>>> GetProductsAsync([FromQuery] ProductQueryParameters parameters)
         {
             var products = await productService.GetProductsAsync(parameters);
