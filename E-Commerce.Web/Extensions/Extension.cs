@@ -1,9 +1,15 @@
 ﻿using E_Commerce.Domain.Contracts;
+using E_Commerce.Domain.Entities.Identity;
 using E_Commerce.Persistence;
+using E_Commerce.Persistence.Identity.Contexts;
 using E_Commerce.Service;
+using E_Commerce.Shared;
 using E_Commerce.Shared.ErrorModels;
 using E_Commerce.Web.Middlewares;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 
 namespace E_Commerce.Web.Extensions
 {
@@ -41,6 +47,35 @@ namespace E_Commerce.Web.Extensions
             services.AddEndpointsApiExplorer();
             services.AddSwaggerGen();
 
+            //Add Identity Service
+            services.AddIdentityCore<AppUser>(options =>
+            {
+                options.User.RequireUniqueEmail = true;
+            }).AddRoles<IdentityRole>()
+              .AddEntityFrameworkStores<IdentityStoreDbContext>();
+
+            services.Configure<JwtOptions>(configuration.GetSection("JwtOptions"));
+
+            var jwtOptions = configuration.GetSection("JwtOptions").Get<JwtOptions>();
+
+            services.AddAuthentication(options =>
+            {
+                options.DefaultAuthenticateScheme = "Bearer";
+                options.DefaultChallengeScheme = "Bearer";
+            }).AddJwtBearer(options =>
+            {
+                options.TokenValidationParameters = new TokenValidationParameters()
+                {
+                    ValidateIssuer = true,
+                    ValidIssuer = jwtOptions.Issuer,
+                    ValidateActor = true,
+                    ValidAudience = jwtOptions.Audience,
+                    ValidateLifetime = true,
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtOptions.SecurityKey))
+                };
+            });
+
             return services;
         }
 
@@ -50,6 +85,7 @@ namespace E_Commerce.Web.Extensions
             using var scope = app.Services.CreateScope();
             var initializer = scope.ServiceProvider.GetRequiredService<IDbInitializer>();
             await initializer.InitializeAsync();
+            await initializer.InitializeIdentityAsync();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -64,8 +100,9 @@ namespace E_Commerce.Web.Extensions
 
             app.UseHttpsRedirection();
 
-            app.UseAuthorization();
+            app.UseAuthentication();
 
+            app.UseAuthorization();
 
             app.MapControllers();
 
