@@ -1,4 +1,5 @@
 ﻿using E_Commerce.Service.MappingProfile;
+using E_Commerce.Service.MappingProfiles;
 using E_Commerce.Service.Services;
 using E_Commerce.Services.Abstraction;
 using Microsoft.Extensions.Configuration;
@@ -14,8 +15,10 @@ namespace E_Commerce.Service
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<ICacheSerivce, CacheSerivce>();
             services.AddScoped<IAuthService, AuthService>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddAutoMapper(x => x.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(x => x.AddProfile(new BasketProfile()));
+            services.AddAutoMapper(x => x.AddProfile(new OrderProfile()));
 
             return services;
         }

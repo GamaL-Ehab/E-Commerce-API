@@ -3,6 +3,6 @@
     public class BasketDto
     {
         public string Id { get; set; }
-        IEnumerable<BasketItemDto> BasketItems { get; set; }
+        public IEnumerable<BasketItemDto> BasketItems { get; set; }
     }
 }
