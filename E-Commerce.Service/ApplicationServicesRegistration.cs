@@ -13,6 +13,7 @@ namespace E_Commerce.Service
             services.AddScoped<IProductService, ProductService>();
             services.AddScoped<IBasketService, BasketService>();
             services.AddScoped<ICacheSerivce, CacheSerivce>();
+            services.AddScoped<IAuthService, AuthService>();
             services.AddAutoMapper(x => x.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(x => x.AddProfile(new BasketProfile()));
 
