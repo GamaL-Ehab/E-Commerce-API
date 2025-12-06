@@ -1,5 +1,6 @@
 ﻿using E_Commerce.Domain.Contracts;
 using E_Commerce.Domain.Entities.Identity;
+using E_Commerce.Domain.Entities.Orders;
 using E_Commerce.Domain.Entities.Products;
 using E_Commerce.Persistence.Context;
 using E_Commerce.Persistence.Identity.Contexts;
@@ -67,6 +68,23 @@ namespace E_Commerce.Persistence.DbInitializers
 
                 if (products is not null && products.Any())
                     context.Products.AddRange(products);
+
+                await context.SaveChangesAsync();
+            }
+
+            if (!context.DeliveryMethods.Any())
+            {
+                var deliveryMethodsData = await File.ReadAllTextAsync(@"..\E-Commerce.Persistence\Context\DataSeed\delivery.json");
+
+                var options = new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                };
+
+                var deliveryMethods = JsonSerializer.Deserialize<List<DeliveryMethod>>(deliveryMethodsData, options);
+
+                if (deliveryMethods is not null && deliveryMethods.Any())
+                    context.DeliveryMethods.AddRange(deliveryMethods);
 
                 await context.SaveChangesAsync();
             }
