@@ -16,9 +16,11 @@ namespace E_Commerce.Service
             services.AddScoped<ICacheSerivce, CacheSerivce>();
             services.AddScoped<IAuthService, AuthService>();
             services.AddScoped<IOrderService, OrderService>();
+            services.AddScoped<IPaymentService, PaymentService>();
             services.AddAutoMapper(x => x.AddProfile(new ProductProfile(configuration)));
             services.AddAutoMapper(x => x.AddProfile(new BasketProfile()));
             services.AddAutoMapper(x => x.AddProfile(new OrderProfile()));
+            services.AddAutoMapper(x => x.AddProfile(new AuthProfile()));
 
             return services;
         }

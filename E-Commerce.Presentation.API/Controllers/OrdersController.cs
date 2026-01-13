@@ -3,11 +3,10 @@ using E_Commerce.Shared.Dtos.Orders;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace E_Commerce.Presentation.API.Controllers
 {
-    public class OrderController(IOrderService _orderService) : APIBaseController
+    public class OrdersController(IOrderService _orderService) : APIBaseController
     {
         [HttpPost]
         [Authorize]
@@ -19,7 +18,7 @@ namespace E_Commerce.Presentation.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet("DeliveryMethods")]
         public async Task<IActionResult> GetAllDeliveryMethods()
         {
             var result = await _orderService.GetAllDeliveryMethodsAsync();
@@ -27,7 +26,7 @@ namespace E_Commerce.Presentation.API.Controllers
             return Ok(result);
         }
 
-        [HttpGet]
+        [HttpGet("GetAll")]
         [Authorize]
         public async Task<IActionResult> GetAllUserOrders()
         {

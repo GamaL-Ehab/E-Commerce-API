@@ -27,7 +27,7 @@ namespace E_Commerce.Service.Services
 
             var orderItems = new List<OrderItem>();
 
-            foreach (var item in basket.BasketItems)
+            foreach (var item in basket.Items)
             {
                 //Check Price 
                 var product = await _unitOfWork.GetRepository<Product, int>().GetByIdAsync(item.Id);
@@ -45,8 +45,16 @@ namespace E_Commerce.Service.Services
             //4. Calculate Subtotal
             var subTotal = orderItems.Sum(oi => oi.Price * oi.Quantity);
 
+            // Payment Intent
+            // Check if order exists
+            var spec = new OrderWithPaymentIntentSpecification(basket.PaymentIntentId);
+
+            var existsOrder = await _unitOfWork.GetRepository<Order, Guid>().GetAsync(spec);
+            if(existsOrder is not null)
+                _unitOfWork.GetRepository<Order, Guid>().Remove(existsOrder);
+
             //Create order
-            var order = new Order(userEmail, orderAddress, deliveryMethod, orderItems, subTotal);
+            var order = new Order(userEmail, orderAddress, deliveryMethod, orderItems, subTotal, basket.PaymentIntentId);
 
             //Add order to database
             _unitOfWork.GetRepository<Order, Guid>().Add(order);
