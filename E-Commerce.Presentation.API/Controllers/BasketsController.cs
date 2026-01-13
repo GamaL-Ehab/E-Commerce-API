@@ -22,7 +22,7 @@ namespace E_Commerce.Presentation.API.Controllers
             return Ok(basket);
         }
 
-        [HttpDelete]
+        [HttpDelete("{id}")]
         public async Task<ActionResult<BasketDto>> DeleteBasketByid(string id)
         {
             var result = await _basketService.DeleteBasketAsync(id);

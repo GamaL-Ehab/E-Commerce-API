@@ -29,9 +29,11 @@ namespace E_Commerce.Persistence
             services.AddScoped<IBasketRepository, BasketRepository>();
             services.AddScoped<ICacheRepository, CacheRepository>();
 
-            services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
-                ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnection"))
-            );
+            //services.AddSingleton<IConnectionMultiplexer>((serviceProvider) =>
+            //    ConnectionMultiplexer.Connect(configuration.GetConnectionString("RedisConnection"))
+            //);
+
+            services.AddMemoryCache();
 
             return services;
         }

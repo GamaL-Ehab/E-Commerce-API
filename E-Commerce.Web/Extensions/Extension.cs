@@ -76,6 +76,14 @@ namespace E_Commerce.Web.Extensions
                 };
             });
 
+            services.AddCors(opt => 
+            {
+                opt.AddPolicy("AllowAll", policy => 
+                {
+                    policy.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+                });
+            });
+
             return services;
         }
 
@@ -93,12 +101,16 @@ namespace E_Commerce.Web.Extensions
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
+            app.UseSwagger();
+            app.UseSwaggerUI();
 
             app.UseMiddleware<GlobalErrorHandlingMiddleware>();
 
             app.UseStaticFiles();
 
             app.UseHttpsRedirection();
+
+            app.UseCors("AllowAll");
 
             app.UseAuthentication();
 

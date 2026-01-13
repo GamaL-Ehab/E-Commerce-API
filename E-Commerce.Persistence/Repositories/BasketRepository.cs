@@ -1,36 +1,33 @@
 ﻿using E_Commerce.Domain.Contracts;
 using E_Commerce.Domain.Entities.Baskets;
-using StackExchange.Redis;
-using System.Text.Json;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace E_Commerce.Persistence.Repositories
 {
-    public class BasketRepository(IConnectionMultiplexer connection) : IBasketRepository
+    public class BasketRepository(IMemoryCache _cache) : IBasketRepository
     {
-        private readonly IDatabase _database = connection.GetDatabase();
-        public async Task<CustomerBasket?> GetBasketAsync(string id)
+        public Task<CustomerBasket?> GetBasketAsync(string id)
         {
-            var redisValue = await _database.StringGetAsync(id);
-            if(redisValue.IsNullOrEmpty) return null;
-
-            var basket = JsonSerializer.Deserialize<CustomerBasket>(redisValue);
-            if(basket is null) return null;
-
-            return basket;
-        }
-        public async Task<CustomerBasket?> CreateBasketAsync(CustomerBasket basket, TimeSpan duration)
-        {
-            var redisValue = JsonSerializer.Serialize(basket);
-
-            var isCreated = await _database.StringSetAsync(basket.Id, redisValue, duration);
-            if (!isCreated) return null;
-
-            return await GetBasketAsync(basket.Id);
+            _cache.TryGetValue(id, out CustomerBasket? basket);
+            return Task.FromResult(basket);
         }
 
-        public async Task<bool> DeleteBasketAsync(string id)
+        public Task<CustomerBasket?> CreateBasketAsync(CustomerBasket basket, TimeSpan duration)
         {
-            return await _database.KeyDeleteAsync(id);        
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpirationRelativeToNow = duration
+            };
+
+            _cache.Set(basket.Id, basket, options);
+
+            return Task.FromResult(basket)!;
+        }
+
+        public Task<bool> DeleteBasketAsync(string id)
+        {
+            _cache.Remove(id);
+            return Task.FromResult(true);
         }
     }
 }

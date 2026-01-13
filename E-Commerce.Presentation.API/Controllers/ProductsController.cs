@@ -11,7 +11,7 @@ namespace E_Commerce.Presentation.API.Controllers
 {
     public class ProductsController(IProductService productService) : APIBaseController
     {
-        [HttpGet]
+        [HttpGet("brands")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<BrandDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
@@ -37,14 +37,13 @@ namespace E_Commerce.Presentation.API.Controllers
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
         [Cache(60)]
-        [Authorize]
         public async Task<ActionResult<PaginatedResult<ProductDto>>> GetProductsAsync([FromQuery] ProductQueryParameters parameters)
         {
             var products = await productService.GetProductsAsync(parameters);
 
             return Ok(products);
         }
-        [HttpGet]
+        [HttpGet("types")]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(IEnumerable<TypeDto>))]
         [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorDetails))]
         [ProducesResponseType(StatusCodes.Status500InternalServerError, Type = typeof(ErrorDetails))]
